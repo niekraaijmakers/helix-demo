@@ -11,7 +11,10 @@ import {
   waitForLCP,
   loadBlocks,
   loadCSS,
+  decorateBlock,
+  loadBlock,
 } from './lib-franklin.js';
+import {createTag} from "./utils/utils";
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'project-1'; // add your RUM generation information here
@@ -88,6 +91,70 @@ export function addFavIcon(href) {
   } else {
     document.getElementsByTagName('head')[0].appendChild(link);
   }
+}
+const tabElementMap = {};
+
+function calculateTabSectionCoordinate(main, lastTabBeginningIndex, targetTabSourceSection) {
+  if (!tabElementMap[lastTabBeginningIndex]) {
+    tabElementMap[lastTabBeginningIndex] = [];
+  }
+  tabElementMap[lastTabBeginningIndex].push(targetTabSourceSection);
+}
+
+function calculateTabSectionCoordinates(main) {
+  let lastTabIndex = -1;
+  let foldedTabsCounter = 0;
+  const mainSections = [...main.childNodes];
+  main
+      .querySelectorAll('div.section[data-tab-title]')
+      .forEach((section) => {
+        const currentSectionIndex = mainSections.indexOf(section);
+
+        if (lastTabIndex < 0 || (currentSectionIndex - foldedTabsCounter) !== lastTabIndex) {
+          // we construct a new tabs component, at the currentSectionIndex
+          lastTabIndex = currentSectionIndex;
+          foldedTabsCounter = 0;
+        }
+
+        foldedTabsCounter += 2;
+        calculateTabSectionCoordinate(main, lastTabIndex, section);
+      });
+}
+
+async function autoBlockTabComponent(main, targetIndex, tabSections) {
+  // the display none will prevent a major CLS penalty.
+  // franklin will remove this once the blocks are loaded.
+  const section = createTag('div', { class: 'section', style: 'display:none' });
+  const tabsBlock = createTag('div', { class: 'tabs' });
+  const tabContentsWrapper = createTag('div', { class: 'contents-wrapper' });
+  tabsBlock.appendChild(tabContentsWrapper);
+
+  tabSections.forEach((tabSection) => {
+    tabSection.classList.remove('section');
+    tabSection.classList.add('contents');
+    // remove display: none
+    tabContentsWrapper.appendChild(tabSection);
+    tabSection.style.display = null;
+  });
+  main.insertBefore(section, main.childNodes[targetIndex]);
+  section.append(tabsBlock);
+  decorateBlock(tabsBlock);
+  await loadBlock(tabsBlock);
+}
+
+function aggregateTabSectionsIntoComponents(main) {
+  calculateTabSectionCoordinates(main);
+
+  // when we aggregate tab sections into a tab autoblock, the index get's lower.
+  // say we have 3 tabs starting at index 10, 12 and 14. and then 3 tabs at 18, 20 and 22.
+  // when we fold the first 3 into 1, those will start at index 10. But the other 3 should now
+  // start at 6 instead of 18 because 'removed' 2 sections.
+  let sectionIndexDelta = 0;
+  Object.keys(tabElementMap).map(async (tabComponentIndex) => {
+    const tabSections = tabElementMap[tabComponentIndex];
+    await autoBlockTabComponent(main, tabComponentIndex - sectionIndexDelta, tabSections);
+    sectionIndexDelta = tabSections.length - 1;
+  });
 }
 
 /**
