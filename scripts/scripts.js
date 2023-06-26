@@ -14,7 +14,7 @@ import {
   decorateBlock,
   loadBlock,
 } from './lib-franklin.js';
-import {createTag} from "./utils/utils";
+import {createTag} from "./utils/utils.js";
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'project-1'; // add your RUM generation information here
