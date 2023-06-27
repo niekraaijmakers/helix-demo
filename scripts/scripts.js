@@ -14,7 +14,6 @@ import {
   decorateBlock,
   loadBlock,
 } from './lib-franklin.js';
-import {createTag} from "./utils/utils.js";
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'project-1'; // add your RUM generation information here
@@ -125,9 +124,16 @@ function calculateTabSectionCoordinates(main) {
 async function autoBlockTabComponent(main, targetIndex, tabSections) {
   // the display none will prevent a major CLS penalty.
   // franklin will remove this once the blocks are loaded.
-  const section = createTag('div', { class: 'section', style: 'display:none' });
-  const tabsBlock = createTag('div', { class: 'tabs' });
-  const tabContentsWrapper = createTag('div', { class: 'contents-wrapper' });
+  const section = document.createElement('div');
+  section.setAttribute('class', 'section');
+  section.setAttribute('style', 'display:none');
+
+  const tabsBlock = document.createElement('div');
+  tabsBlock.setAttribute('class', 'tabs');
+
+  const tabContentsWrapper = document.createElement('div');
+  tabContentsWrapper.setAttribute('class', 'contents-wrapper');
+
   tabsBlock.appendChild(tabContentsWrapper);
 
   tabSections.forEach((tabSection) => {

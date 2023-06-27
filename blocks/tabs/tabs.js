@@ -1,9 +1,8 @@
 import { loadBlocks } from '../../scripts/lib-franklin.js';
 import { decorateMain } from '../../scripts/scripts.js';
-import { createTag } from '../../scripts/utils/utils.js';
 
 async function generateTabMainBlock(html) {
-  const main = createTag('main');
+  const main = document.createElement('main');
   main.innerHTML = html;
   decorateMain(main);
   await loadBlocks(main);
@@ -33,29 +32,38 @@ function generateHiddenInput(tabSectionIndex, presentTabContents, block) {
   const hashObj = decodeHashToObject();
   for (let i = presentTabContents.length - 1; i > -1; i -= 1) {
     const { tabTitle } = presentTabContents[i].dataset;
-    const inputAttrs = {
-      type: 'radio', id: `tab-${tabSectionIndex}-${i}`, name: `tabs-${tabSectionIndex}`,
-    };
+    const input = document.createElement('input');
+
+    input.setAttribute('type', 'radio');
+    input.setAttribute('id', `tab-${tabSectionIndex}-${i}`);
+    input.setAttribute('name', `tabs-${tabSectionIndex}`);
+
     if (
       (hashObj && hashObj.tabMatches(tabTitle, tabSectionIndex))
         || ((!hashObj || !hashObj.tabsComponentMatches(tabSectionIndex)) && i === 0)
     ) {
-      inputAttrs.checked = true;
+      input.setAttribute('checked', true);
     }
-
-    const input = createTag('input', inputAttrs);
     block.prepend(input);
   }
 }
 
 function generateTabNav(tabSectionIndex, presentTabContents) {
-  const ul = createTag('ul', { class: 'tabs-control' });
+  const ul = document.createElement('ul');
+  ul.setAttribute('class', 'tabs-control');
+
   presentTabContents.forEach((tabContent, index) => {
     const { tabTitle } = tabContent.dataset;
-    const li = createTag('li', { class: 'tab' });
-    const label = createTag('label', { for: `tab-${tabSectionIndex}-${index}` });
-    const h2 = createTag('h2');
-    const a = createTag('a', {}, tabTitle);
+    const li = document.createElement('li');
+    li.setAttribute('class', 'tabs');
+
+    const label = document.createElement('label');
+    label.setAttribute('for', `tab-${tabSectionIndex}-${index}`);
+
+    const h2 = document.createElement('h2');
+
+    const a = document.createElement('a');
+    a.innerHTML = tabTitle;
     h2.append(a);
     label.append(h2);
     li.append(label);
