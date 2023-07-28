@@ -126,6 +126,7 @@ async function autoBlockTabComponent(main, targetIndex, tabSections) {
   // franklin will remove this once the blocks are loaded.
   const section = document.createElement('div');
   section.setAttribute('class', 'section');
+  section.setAttribute('style', 'display:none');
   section.dataset.sectionStatus = 'loading';
   const tabsBlock = document.createElement('div');
   tabsBlock.setAttribute('class', 'tabs');
