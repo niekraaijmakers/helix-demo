@@ -147,6 +147,7 @@ async function autoBlockTabComponent(main, targetIndex, tabSections) {
   section.append(tabsBlock);
   decorateBlock(tabsBlock);
   await loadBlock(tabsBlock);
+  section.style.display = null;
 }
 
 function aggregateTabSectionsIntoComponents(main) {
@@ -162,7 +163,6 @@ function aggregateTabSectionsIntoComponents(main) {
     await autoBlockTabComponent(main, tabComponentIndex - sectionIndexDelta, tabSections);
     sectionIndexDelta = tabSections.length - 1;
   });
-  updateSectionsStatus(main, true);
 }
 
 /**

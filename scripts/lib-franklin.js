@@ -321,7 +321,7 @@ export function decorateSections(main) {
  * Updates all section status in a container element.
  * @param {Element} main The container element
  */
-export function updateSectionsStatus(main, tabsTrigger = false) {
+export function updateSectionsStatus(main) {
   const sections = [...main.querySelectorAll(':scope > div.section')];
   for (let i = 0; i < sections.length; i += 1) {
     const section = sections[i];
