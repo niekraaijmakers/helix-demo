@@ -127,7 +127,8 @@ async function autoBlockTabComponent(main, targetIndex, tabSections) {
   const section = document.createElement('div');
   section.setAttribute('class', 'section');
   section.setAttribute('style', 'display:none');
-
+  main.insertBefore(section, main.childNodes[targetIndex]);
+  
   const tabsBlock = document.createElement('div');
   tabsBlock.setAttribute('class', 'tabs');
 
@@ -143,7 +144,7 @@ async function autoBlockTabComponent(main, targetIndex, tabSections) {
     tabContentsWrapper.appendChild(tabSection);
     tabSection.style.display = null;
   });
-  main.insertBefore(section, main.childNodes[targetIndex]);
+
   section.append(tabsBlock);
   decorateBlock(tabsBlock);
   await loadBlock(tabsBlock);
