@@ -153,7 +153,6 @@ async function autoBlockTabComponent(main, targetIndex, tabSections) {
 function aggregateTabSectionsIntoComponents(main) {
   calculateTabSectionCoordinates(main);
 
-  console.log('tabcoords', tabElementMap);
   // when we aggregate tab sections into a tab autoblock, the index get's lower.
   // say we have 3 tabs starting at index 10, 12 and 14. and then 3 tabs at 18, 20 and 22.
   // when we fold the first 3 into 1, those will start at index 10. But the other 3 should now
@@ -164,7 +163,7 @@ function aggregateTabSectionsIntoComponents(main) {
     await autoBlockTabComponent(main, tabComponentIndex - sectionIndexDelta, tabSections);
     sectionIndexDelta = tabSections.length - 1;
   });
-  updateSectionsStatus(main);
+  updateSectionsStatus(main, true);
 }
 
 /**

@@ -321,7 +321,7 @@ export function decorateSections(main) {
  * Updates all section status in a container element.
  * @param {Element} main The container element
  */
-export function updateSectionsStatus(main) {
+export function updateSectionsStatus(main, tabsTrigger = false) {
   const sections = [...main.querySelectorAll(':scope > div.section')];
   for (let i = 0; i < sections.length; i += 1) {
     const section = sections[i];
@@ -330,6 +330,9 @@ export function updateSectionsStatus(main) {
       const loadingBlock = section.querySelector('.block[data-block-status="initialized"], .block[data-block-status="loading"]');
       if (loadingBlock) {
         section.dataset.sectionStatus = 'loading';
+        if(tabsTrigger){
+          console.log('loadingBlock', loadingBlock);
+        }
         break;
       } else {
         section.dataset.sectionStatus = 'loaded';
