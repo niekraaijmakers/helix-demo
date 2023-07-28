@@ -330,9 +330,6 @@ export function updateSectionsStatus(main, tabsTrigger = false) {
       const loadingBlock = section.querySelector('.block[data-block-status="initialized"], .block[data-block-status="loading"]');
       if (loadingBlock) {
         section.dataset.sectionStatus = 'loading';
-        if(tabsTrigger){
-          console.log('loadingBlock', loadingBlock);
-        }
         break;
       } else {
         section.dataset.sectionStatus = 'loaded';
