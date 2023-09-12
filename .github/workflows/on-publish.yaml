@@ -1,3 +1,5 @@
+name: On Publish Test
+
 on:
   repository_dispatch:
     types:
