@@ -1,6 +1,11 @@
 name: On Publish Test
 
 on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Who to greet"
+        default: "World"
   repository_dispatch:
     types:
       - resource-published
