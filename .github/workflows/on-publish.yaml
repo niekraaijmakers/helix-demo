@@ -6,8 +6,14 @@ on:
       - resource-published
 jobs:
   print:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
-      - run: |
-          echo "Status: ${{ github.event.client_payload.status }}"
-          echo "Path: ${{ github.event.client_payload.path }}"
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+      - run: node -v
+      - run: npm -v
+      - name: Checkout
+        uses: actions/checkout@v4
+      - run: node dist/index.js
