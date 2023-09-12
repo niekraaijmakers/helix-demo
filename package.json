@@ -33,5 +33,9 @@
     "sinon": "15.0.1",
     "stylelint": "15.2.0",
     "stylelint-config-standard": "30.0.1"
+  },
+  "dependencies": {
+    "@aws-sdk/credential-provider-node": "^3.410.0",
+    "@opensearch-project/opensearch": "^2.3.1"
   }
 }
