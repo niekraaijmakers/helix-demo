@@ -1,0 +1,6 @@
+version: 1
+sitemaps:
+  default:
+    origin: https://main--helix-demo-niekraaijmakers.hlx.live
+    source: https://www.revolt.tv/sitemap_index.xml
+    destination: /sitemap.xml
