@@ -22,10 +22,11 @@ const HEADERS = {
 
 const NO_INTERLINKS = 'no-interlinks';
 
-const CATEGORIES = 'categories';
-const PRODUCTS = 'products';
-const INDUSTRIES = 'industries';
-const INTERNALS = 'internals';
+const MOVIES = 'movies';
+const ARTISTS = 'artists';
+const NEWS = 'news';
+const MUSIC = 'music';
+const POLITICS = 'politics';
 
 /**
  * Filters a string to become a filename of a url
@@ -56,14 +57,16 @@ export default async (url) => {
     return topic.replace(/\n/gm, ' ').trim();
   };
 
-  const isProduct = (cat) => cat && cat.toLowerCase() === PRODUCTS;
-
   const target = url || `${root}/taxonomy.json`;
 
   return fetch(target)
     .then((response) => response.json())
     .then((json) => {
-      const data = {};
+      const data = {
+        categories: {},
+        topics: {},
+        topicChildren: {},
+      };
 
       if (json && json.data && json.data.length > 0) {
         const H = HEADERS;
@@ -83,7 +86,7 @@ export default async (url) => {
 
           const name = level3 || level2 || level1;
 
-          const category = row[H.type] ? row[H.type].trim().toLowerCase() : INTERNALS;
+          const category = row[H.type] ;
 
           // skip duplicates
           if (data.topics[name]) return;
@@ -119,7 +122,7 @@ export default async (url) => {
             data.categories[item.category].push(item.name);
           }
 
-          const children = isProduct(category) ? data.productChildren : data.topicChildren;
+          const children = data.topicChildren;
           if (level3) {
             if (!children[level2]) {
               children[level2] = [];
@@ -141,25 +144,15 @@ export default async (url) => {
       }
 
       const findItem = (topic, cat) => {
-        let t;
-        if (!cat) {
-          t = data.products[topic];
-          if (!isProduct(cat) && !t) {
-            t = data.topics[topic];
-          }
-        } else if (isProduct(cat)) {
-          t = data.products[topic];
-        } else {
-          t = data.topics[topic];
-        }
-        return t;
+        return data[topic];
       };
 
       return {
-        CATEGORIES,
-        INDUSTRIES,
-        INTERNALS,
-        PRODUCTS,
+        NEWS,
+        ARTISTS,
+        MUSIC,
+        MOVIES,
+        POLITICS,
         NO_INTERLINKS,
 
         get(topic, cat) {
@@ -215,8 +208,7 @@ export default async (url) => {
         },
 
         getChildren(topic, cat) {
-          const children = isProduct(cat) ? data.productChildren : data.topicChildren;
-          return children[topic] || [];
+          return data.topicChildren[topic] || [];
         },
 
         getCategory(cat) {
