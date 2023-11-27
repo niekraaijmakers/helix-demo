@@ -1,0 +1,11 @@
+{
+  "project": "test",
+  "plugins": [
+    {
+      "id": "tagger",
+      "title": "Tagger",
+      "environments": [ "edit" ],
+      "url": "/tools/tagger/index.html"
+    }
+  ]
+}
